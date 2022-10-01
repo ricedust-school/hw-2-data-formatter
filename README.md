@@ -1,4 +1,4 @@
-# hw-2-data-formatter
+# HW #2 Data Format
 
 1. Reads a filename as an argument
 
