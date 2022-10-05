@@ -127,7 +127,7 @@ public class DataFormatter {
 				
 				js.put(entry);
 			}
-			// writer.write(js.toString());
+			
 			writer.write(XML.toString(js, "Player"));
 			reader.close();
 			writer.close();
