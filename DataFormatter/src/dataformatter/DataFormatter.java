@@ -51,6 +51,8 @@ public class DataFormatter {
 			default:
 				throw new IllegalArgumentException("Unexpected format: " + this.format);
 		}
+		
+		System.out.println("File successfully created in current directory");
 	}
 	
 	private void writeToCSV() {
