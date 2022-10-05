@@ -1,12 +1,15 @@
 package dataformatter;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
 import com.opencsv.CSVWriter;
 
 public class DataFormatter {
@@ -51,15 +54,17 @@ public class DataFormatter {
 	private void writeToCSV() {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(this.filename));
-			CSVWriter writer = new CSVWriter(new FileWriter("data_CSV.csv"));
+			CSVWriter writer = new CSVWriter(new FileWriter("CSV_data.csv"));
 			
 			String line = null;
+			
 			while ((line = reader.readLine()) != null) {
 				writer.writeNext(line.split("\t"));
 			}
 			
 			reader.close();
 			writer.close();
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -68,7 +73,35 @@ public class DataFormatter {
 	}
 	
 	private void writeToJSON() {
-		
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(this.filename));
+			BufferedWriter  writer = new BufferedWriter(new FileWriter("JSON_data.json"));
+			JsonArray js = new JsonArray();
+			
+			String[] categories = reader.readLine().split("\t");
+			String line;
+			
+			while ((line = reader.readLine()) != null) {
+				int categoryIndex = 0;
+				JsonObject entry = new JsonObject();
+				
+				for (String value : line.split("\t")) {
+					entry.put(categories[categoryIndex], value);
+					categoryIndex++;
+				}
+				
+				js.add(entry);
+			}
+			writer.write(js.toJson());
+			
+			reader.close();
+			writer.close();
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void writetoXML() {
