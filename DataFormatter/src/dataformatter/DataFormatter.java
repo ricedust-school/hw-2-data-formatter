@@ -8,8 +8,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-import com.github.cliftonlabs.json_simple.JsonArray;
-import com.github.cliftonlabs.json_simple.JsonObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.XML;
+
 import com.opencsv.CSVWriter;
 
 public class DataFormatter {
@@ -54,7 +56,7 @@ public class DataFormatter {
 	private void writeToCSV() {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(this.filename));
-			CSVWriter writer = new CSVWriter(new FileWriter("CSV_data.csv"));
+			CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter("CSV_data.csv")));
 			
 			String line = null;
 			
@@ -76,24 +78,23 @@ public class DataFormatter {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(this.filename));
 			BufferedWriter  writer = new BufferedWriter(new FileWriter("JSON_data.json"));
-			JsonArray js = new JsonArray();
+			JSONArray js = new JSONArray();
 			
 			String[] categories = reader.readLine().split("\t");
 			String line;
 			
 			while ((line = reader.readLine()) != null) {
 				int categoryIndex = 0;
-				JsonObject entry = new JsonObject();
+				JSONObject entry = new JSONObject();
 				
 				for (String value : line.split("\t")) {
 					entry.put(categories[categoryIndex], value);
 					categoryIndex++;
 				}
 				
-				js.add(entry);
+				js.put(entry);
 			}
-			writer.write(js.toJson());
-			
+			writer.write(js.toString());
 			reader.close();
 			writer.close();
 			
@@ -105,7 +106,35 @@ public class DataFormatter {
 	}
 	
 	private void writetoXML() {
-		
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(this.filename));
+			BufferedWriter  writer = new BufferedWriter(new FileWriter("XML_data.xml"));
+			JSONArray js = new JSONArray();
+			
+			String[] categories = reader.readLine().split("\t");
+			String line;
+			
+			while ((line = reader.readLine()) != null) {
+				int categoryIndex = 0;
+				JSONObject entry = new JSONObject();
+				
+				for (String value : line.split("\t")) {
+					entry.put(categories[categoryIndex], value);
+					categoryIndex++;
+				}
+				
+				js.put(entry);
+			}
+			// writer.write(js.toString());
+			writer.write(XML.toString(js, "Player"));
+			reader.close();
+			writer.close();
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 		
 	@Override
@@ -115,8 +144,6 @@ public class DataFormatter {
 	
 	public static void main(String[] args) {
 		DataFormatter df = new DataFormatter();
-//		df.getArgs();
-//		System.out.println(df);
 		df.convert();
 	}
 }
